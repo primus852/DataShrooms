@@ -76,6 +76,7 @@ test_X = big_X_imputed[train.shape[0]::].values
 train_y = train['class']
 
 # Use XGBoost
+# TODO: Change to sth that supports confidence intervals
 gbm = xgb.XGBClassifier(max_depth=3, n_estimators=300, learning_rate=0.05).fit(train_X, train_y)
 predictions = gbm.predict(test_X)
 
