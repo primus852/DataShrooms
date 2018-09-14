@@ -3,6 +3,8 @@ import xgboost as xgb
 import numpy as np
 from sklearn.preprocessing import LabelEncoder
 from sklearn.base import TransformerMixin
+import seaborn as sns
+import matplotlib.pyplot as plt
 
 
 class DataFrameImputer(TransformerMixin):
@@ -53,15 +55,15 @@ test = pd.DataFrame({
 # Use cols to train
 # TODO: reduce to avoid overfitting?
 train_cols = ['cap-shape', 'cap-surface', 'cap-color', 'bruises', 'odor', 'gill-attachment', 'gill-spacing',
-              'gill-size', 'gill-color', 'stalk-shape', 'stalk-surface-above-ring',
+              'gill-size', 'gill-color', 'stalk-shape', 'stalk-root', 'stalk-surface-above-ring',
               'stalk-surface-below-ring', 'stalk-color-above-ring', 'stalk-color-below-ring', 'veil-type',
               'veil-color', 'ring-number', 'ring-type', 'spore-print-color', 'population', 'habitat']
 
 # Convert non numeric cols (all)
 label_cols = ['cap-shape', 'cap-surface', 'cap-color', 'bruises', 'odor', 'gill-attachment', 'gill-spacing',
-              'gill-size', 'gill-color', 'stalk-shape', 'stalk-surface-above-ring', 'stalk-surface-below-ring',
-              'stalk-color-above-ring', 'stalk-color-below-ring', 'veil-type', 'veil-color', 'ring-number',
-              'ring-type', 'spore-print-color', 'population', 'habitat']
+              'gill-size', 'gill-color', 'stalk-shape', 'stalk-root', 'stalk-surface-above-ring',
+              'stalk-surface-below-ring', 'stalk-color-above-ring', 'stalk-color-below-ring', 'veil-type', 'veil-color',
+              'ring-number', 'ring-type', 'spore-print-color', 'population', 'habitat']
 
 big_X = train[train_cols].append(test[train_cols])
 big_X_imputed = DataFrameImputer().fit_transform(big_X)
@@ -76,9 +78,17 @@ test_X = big_X_imputed[train.shape[0]::].values
 train_y = train['class']
 
 # Use XGBoost
-# TODO: Change to sth that supports confidence intervals
+# TODO: Change to sth that supports confidence intervals?
 gbm = xgb.XGBClassifier(max_depth=3, n_estimators=300, learning_rate=0.05).fit(train_X, train_y)
 predictions = gbm.predict(test_X)
+
+# Show the correlation between the features
+corr_matrix = big_X_imputed.corr()
+plt.figure(figsize=(20, 16))
+ax = sns.heatmap(corr_matrix, vmax=1, square=True, annot=True, fmt='.2f', cmap='GnBu', cbar_kws={"shrink": .5},
+                 robust=True)
+plt.title('Correlation matrix between the features', fontsize=20)
+plt.show()
 
 # Save Results to CSV
 result = pd.DataFrame({'id': test['id'], 'class': predictions})
