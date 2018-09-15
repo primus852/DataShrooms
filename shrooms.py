@@ -112,5 +112,37 @@ score_test = classifier.score(X_test, Y_test)
 
 print('Train Score {}, Test Score {}, Time {}'.format(score_train, score_test, time_diff))
 
+manual = pd.DataFrame({
+    "cap-shape": ["x"],
+    "cap-surface": ["s"],
+    "cap-color": ["n"],
+    "bruises": ["f"],
+    "odor": ["n"],
+    "gill-attachment": ["a"],
+    "gill-spacing": ["c"],
+    "gill-size": ["b"],
+    "gill-color": ["y"],
+    "stalk-shape": ["e"],
+    "stalk-root": ["?"],
+    "stalk-surface-above-ring": ["s"],
+    "stalk-surface-below-ring": ["s"],
+    "stalk-color-above-ring": ["o"],
+    "stalk-color-below-ring": ["o"],
+    "veil-type": ["p"],
+    "veil-color": ["o"],
+    "ring-number": ["o"],
+    "ring-type": ["p"],
+    "spore-print-color": ["o"],
+    "population": ["c"],
+    "habitat": ["l"]
+})
+
+
+# HOW TO PREDICT?
+all_cols_manual = list(manual.columns.values)
+helper.encode(manual, [col_predict])
+helper.expand(manual, all_cols_manual)
+predictions = classifier.predict(manual)
+
 # TODO: Test a manual DataFrame
 
