@@ -4,25 +4,25 @@ from sklearn.model_selection import train_test_split
 from sklearn.ensemble import GradientBoostingClassifier
 from sklearn.metrics import accuracy_score
 
-data = pd.read_csv('data/shrooms_no_header.csv', header=None) #read data
-data.rename(columns={0: 'y'}, inplace = True) #rename predict column (edible or not)
+data = pd.read_csv('data/shrooms_no_header.csv', header=None)  # read data
+data.rename(columns={0: 'y'}, inplace=True)  # rename predict column (edible or not)
 
-le = LabelEncoder() # encoder to do label encoder
+le = LabelEncoder()  # encoder to do label encoder
 
-data = data.apply(lambda x: le.fit_transform(x)) #apply LE to all columns
+data = data.apply(lambda x: le.fit_transform(x))  # apply LE to all columns
 
-X = data.drop('y', 1) # X without predict column
-y = data['y'] #predict column
+X = data.drop('y', 1)  # X without predict column
+y = data['y']  # predict column
 
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
 
-clf = GradientBoostingClassifier()#you can pass arguments
+clf = GradientBoostingClassifier()  # you can pass arguments
 
 clf.fit(X_train, y_train)
 
-y_pred = clf.predict(X_test) #it is predict for objects in test
+y_pred = clf.predict(X_test)  # it is predict for objects in test
 
-print(accuracy_score(y_test, y_pred)) #check accuracy
+print(accuracy_score(y_test, y_pred))  # check accuracy
 
 manual = pd.DataFrame({
     "cap-shape": ["x"],
