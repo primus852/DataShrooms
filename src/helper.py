@@ -1,6 +1,31 @@
 import numpy as np
 from sklearn.preprocessing import LabelEncoder
 import matplotlib.pyplot as plt
+import pandas as pd
+
+
+def make_table(results, order='accuracy'):
+
+    # Get all List Keys
+    keylist = [key for key in results.keys()]
+
+    # Valuelists
+    time = [results[key]['time'] for key in keylist]
+    accuracy = [results[key]['accuracy'] for key in keylist]
+    single = [results[key]['single'] for key in keylist]
+
+    # Init the DataFrame and fill it with Zeros, so we can access it next
+    df_ = pd.DataFrame(data=np.zeros(shape=(len(keylist), 4)),
+                       columns=['classifier', 'time', 'accuracy', 'single'])
+
+    for ii in range(0, len(keylist)):
+        df_.loc[ii, 'classifier'] = keylist[ii]
+        df_.loc[ii, 'time'] = time[ii]
+        df_.loc[ii, 'accuracy'] = accuracy[ii]
+        df_.loc[ii, 'single'] = single[ii]
+
+    # Print the Table and order by Accuracy (default), lowest to highest
+    print(df_.sort_values(by=order, ascending=True))
 
 
 def split_df(df, y_col, x_cols, ratio):
